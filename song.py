@@ -1,30 +1,23 @@
 from datetime import datetime
 from sqlalchemy import Column, Text
-from base import Base
 from AudioFile import AudioFile
 
-class Song(AudioFile, Base):
+class Song(AudioFile):
     """Initialize a Song inherited by AudioFile, with album and genre
 
     With ORM
     """
-    __tablename__ = "collection"
-    title = Column(Text, primary_key=True)
-    artist = Column(Text, nullable=True)
     album = Column(Text, nullable=True)
-    duration = Column(Text, nullable=False)
     genre = Column(Text, nullable=True)
-    rating = Column(Text, nullable=True)
-    pathname = Column(Text, nullable=True)
 
     def __init__(self, title: str = '-', artist: str = '-', runtime: str = '-', rating: int = 0, pathname: str = '-',
                  album: str = '-', genre: str = None) -> None:
         super().__init__(title, artist, runtime, rating, pathname)
         self._album = album
-        self._genre = []
+        self._genre = ''
 
         Song._validate_constructor(title, artist, runtime, rating, album, genre)
-        Song._split_string_genre(self, genre)
+        # Song._split_string_genre(self, genre)
 
         #-----NOTE: runtime is treated the same as duration-----
 
@@ -40,12 +33,12 @@ class Song(AudioFile, Base):
             raise ValueError('Values must be a string and "rating" must be an int.')
 
 
-    def _split_string_genre(self, genre) -> None:
-        """Split genre string when creating object and append to genre list"""
-        if genre is not None:
-            genre_list = genre.split(', ')
-            for thing in genre_list:
-                self._genre.append(thing)
+    # def _split_string_genre(self, genre) -> None:
+    #     """Split genre string when creating object and append to genre list"""
+    #     if genre is not None:
+    #         genre_list = genre.split(', ')
+    #         for thing in genre_list:
+    #             self._genre.append(thing)
 
     def get_description(self) -> str:
         """Returns a string containing a description of the song"""
@@ -118,36 +111,36 @@ class Song(AudioFile, Base):
                f"({self.student_id})>"
 
 
-    #vvvvvvvvvvvvvvv   UsageStats data below vvvvvvvvvvvvvvvvvvvvvvv
-
-    @property
-    def date_added(self):
-        """ return the date the song or playlist was added to the library """
-        return self._date_added.strftime("%Y-%m-%d")
-
-    @property
-    def last_played(self):
-        """ return the date the song or playlist was last played """
-        if self._last_played is None:
-            return None
-        else:
-            return self._last_played.strftime("%Y-%m-%d")
-
-    @property
-    def play_count(self):
-        """ return the number of times the song or playlist has been played """
-        return self._play_count
-
-    def increment_usage_stats(self):
-        """ update the play count and last played time when a song is played """
-        self._play_count += 1
-        self._last_played = datetime.now()
-
-    @classmethod
-    def __valid_datetime(cls, date):
-        """ private method to validate the date is datetime object """
-        if type(date) is not datetime:
-            return False
-        else:
-            return True
-
+    # #vvvvvvvvvvvvvvv   UsageStats data below vvvvvvvvvvvvvvvvvvvvvvv
+    #
+    # @property
+    # def date_added(self):
+    #     """ return the date the song or playlist was added to the library """
+    #     return self._date_added.strftime("%Y-%m-%d")
+    #
+    # @property
+    # def last_played(self):
+    #     """ return the date the song or playlist was last played """
+    #     if self._last_played is None:
+    #         return None
+    #     else:
+    #         return self._last_played.strftime("%Y-%m-%d")
+    #
+    # @property
+    # def play_count(self):
+    #     """ return the number of times the song or playlist has been played """
+    #     return self._play_count
+    #
+    # def increment_usage_stats(self):
+    #     """ update the play count and last played time when a song is played """
+    #     self._play_count += 1
+    #     self._last_played = datetime.now()
+    #
+    # @classmethod
+    # def __valid_datetime(cls, date):
+    #     """ private method to validate the date is datetime object """
+    #     if type(date) is not datetime:
+    #         return False
+    #     else:
+    #         return True
+    #

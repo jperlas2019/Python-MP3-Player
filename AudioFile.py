@@ -1,14 +1,29 @@
 from datetime import datetime
 from abc import abstractmethod
 import os
+from sqlalchemy import Column, Text, Integer
+from base import Base
 
 
-class AudioFile:
+class AudioFile(Base):
     """Represent a song played on a music player
 
     Author: Jaguar Perlas
     ID: A01175812
     """
+
+    __tablename__ = "collection"
+    id = Column(Integer, primary_key=True)
+    title = Column(Text, nullable=True)
+    artist = Column(Text, nullable=True)
+    # album = Column(Text, nullable=True)
+    duration = Column(Text, nullable=False)
+    # genre = Column(Text, nullable=True)
+    rating = Column(Text, nullable=True)
+    pathname = Column(Text, nullable=True)
+    date_added = Column(Text, nullable=True)
+    last_played = Column(Text, nullable=True)
+
 
     def __init__(self, title: str, artist: str, runtime: str, rating: int = 0, pathname: str = None) -> None:
         """Initialize a song with a title, artist, album, date added, runtime, pathname, filename,
@@ -88,33 +103,33 @@ class AudioFile:
 
     #UsageStats functions below vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-    # @property
-    # def date_added(self):
-    #     """ return the date the song or playlist was added to the library """
-    #     return self._date_added.strftime("%Y-%m-%d")
-    #
-    # @property
-    # def last_played(self):
-    #     """ return the date the song or playlist was last played """
-    #     if self._last_played is None:
-    #         return None
-    #     else:
-    #         return self._last_played.strftime("%Y-%m-%d")
-    #
-    # @property
-    # def play_count(self):
-    #     """ return the number of times the song or playlist has been played """
-    #     return self._play_count
-    #
-    # def increment_usage_stats(self):
-    #     """ update the play count and last played time when a song is played """
-    #     self._play_count += 1
-    #     self._last_played = datetime.now()
-    #
-    # @classmethod
-    # def __valid_datetime(cls, date):
-    #     """ private method to validate the date is datetime object """
-    #     if type(date) is not datetime:
-    #         return False
-    #     else:
-    #         return True
+    @property
+    def date_added(self):
+        """ return the date the song or playlist was added to the library """
+        return self._date_added.strftime("%Y-%m-%d")
+
+    @property
+    def last_played(self):
+        """ return the date the song or playlist was last played """
+        if self._last_played is None:
+            return None
+        else:
+            return self._last_played.strftime("%Y-%m-%d")
+
+    @property
+    def play_count(self):
+        """ return the number of times the song or playlist has been played """
+        return self._play_count
+
+    def increment_usage_stats(self):
+        """ update the play count and last played time when a song is played """
+        self._play_count += 1
+        self._last_played = datetime.now()
+
+    @classmethod
+    def __valid_datetime(cls, date):
+        """ private method to validate the date is datetime object """
+        if type(date) is not datetime:
+            return False
+        else:
+            return True
