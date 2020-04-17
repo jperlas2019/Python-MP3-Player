@@ -89,6 +89,13 @@ class SongManager:
 
         return all_songs
 
+    def delete_all_songs(self):
+        """ Delete all students from the database """
+        session = self._db_session()
+        session.query(Song).delete()
+        session.commit()
+        session.close()
+
 
 
 
