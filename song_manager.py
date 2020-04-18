@@ -33,11 +33,8 @@ class SongManager:
 
         return song_title
 
-    def update_song(self, song):
+    def update_song(self, song_title, song):
         """Update existing song to match given, by title"""
-        if song is None or not isinstance(song, Song):
-            raise ValueError('Invalid Song Object')
-
         session = self._db_session()
 
         existing_song = session.query(Song).filter(Song.title == song.title).first()
@@ -49,7 +46,20 @@ class SongManager:
         session.commit()
         session.close()
 
-    def get_song(self, song_title):
+    def get_song_by_id(self, song_id):
+        """Return song object matching id"""
+        if song_id is None or type(song_id) != str:
+            raise ValueError("Invalid Song ID")
+
+        session = self._db_session()
+
+        song = session.query(Song).filter(Song.id == song_id).first()
+
+        session.close()
+
+        return song
+
+    def get_song_by_title(self, song_title):
         """Return song object matching title"""
         if song_title is None or type(song_title) != str:
             raise ValueError("Invalid Song Title")
@@ -58,6 +68,7 @@ class SongManager:
 
         song = session.query(Song).filter(Song.title == song_title).first()
 
+
         session.close()
 
         return song
@@ -65,7 +76,7 @@ class SongManager:
     def delete_song(self, song_title):
         """Delete a song from the database"""
         if song_title is None or type(song_title) != str:
-            raise ValueError("Invalid Song Title")
+            raise ValueError("Invalid Song Id")
 
         session = self._db_session()
 

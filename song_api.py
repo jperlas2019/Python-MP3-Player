@@ -22,18 +22,17 @@ def add_song():
     return response
 
 
-@app.route('/song/<string:song_id>', methods=['GET'])
-def get_song(song_id):
+@app.route('/song/<string:song_title>', methods=['GET'])
+def get_song(song_title):
     """ Get a song from the database """
     try:
-        song = song_mgr.get_song(song_id)
+        song = song_mgr.get_song_by_title(song_title)
         if song is None:
-            raise ValueError(f"Song {song_id} does not exist")
+            raise ValueError(f"Song with id {song_title} does not exist")
 
         response = app.response_class(
                 status=200,
                 response=json.dumps(song.to_dict()),
-                mimetype='application/json'
         )
         return response
     except ValueError as e:
@@ -53,6 +52,21 @@ def get_all_songs():
                                   mimetype='application/json')
     return response
 
+@app.route('/song/<string:song_title>', methods=['DELETE'])
+def delete_song(song_title):
+    """Delete a song from the database"""
+    try:
+        song = song_mgr.get_song_by_title(song_title)
+        if song is None:
+            raise ValueError(f"Song with title {song_title} does not exist")
+        song_mgr.delete_song(song_title)
+        response = app.response_class(status=200)
+        return response
+    except ValueError as e:
+        response = app.response_class(response=str(e), status=404)
+        return response
+
+
 
 @app.route('/song/all', methods=['DELETE'])
 def delete_all_songs():
@@ -65,19 +79,19 @@ def delete_all_songs():
     return response
 
 
-@app.route('/song/<string:song_id>', methods=['PUT'])
-def update_song(song_id):
+@app.route('/song/<string:song_title>', methods=['PUT'])
+def update_song(song_title):
     """ Update the song information  """
     content = request.json
 
     try:
-        song = song_mgr.get_song(song_id)
+        song = song_mgr.get_song_by_title(song_title)
         song.title = content['title']
         song.artist = content['artist']
         song.album = content['album']
         song.genre = content['genre']
         song.rating = content['rating']
-        song_mgr.update_song(song)
+        song_mgr.update_song(song_title, song)
         response = app.response_class(
                 status=200
         )

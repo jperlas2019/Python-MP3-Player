@@ -49,7 +49,13 @@ class UpdateWindow(tk.Frame):
 
     def get_form_data(self):
         """returns song info to be added separated by commas"""
-        return self.song_id.get() + ',' + self.fname.get() + ',' + self.lname.get()
+        form_data = []
+        form_data.append(self.title.get())
+        form_data.append(self.artist.get())
+        form_data.append(self.album.get())
+        form_data.append(self.genre.get())
+        form_data.append(self.rating.get())
+        return form_data
 
     def clear_form_fields(self):
         """ Clear the entry boxes """
